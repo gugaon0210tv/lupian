@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>루피안 커뮤니티</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: "Pretendard", Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+    header {
+      background: #020617;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1e293b;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+      color: #38bdf8;
+    }
+    nav a {
+      margin-left: 16px;
+      color: #cbd5f5;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    nav a:hover {
+      color: #38bdf8;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+    .hero h2 {
+      margin: 0 0 12px;
+      font-size: 28px;
+    }
+    .hero p {
+      margin: 0;
+      font-size: 16px;
+      opacity: 0.9;
+    }
+    .boards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .board {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 20px;
+      transition: transform 0.2s, border 0.2s;
+    }
+    .board:hover {
+      transform: translateY(-4px);
+      border-color: #38bdf8;
+    }
+    .board h3 {
+      margin: 0 0 8px;
+      color: #38bdf8;
+    }
+    .board p {
+      margin: 0;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+    footer {
+      margin-top: 48px;
+      padding: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: #64748b;
+      border-top: 1px solid #1e293b;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>루피안</h1>
+  <nav>
+    <a href="#">홈</a>
+    <a href="#">자유게시판</a>
+    <a href="#">콘텐츠</a>
+    <a href="#">아이디어</a>
+    <a href="#">공지</a>
+  </nav>
+</header>
+
+<div class="container">
+  <section class="hero">
+    <h2>상상력 있는 사람들이 모이는 곳</h2>
+    <p>루피안은 게임, 창작, 아이디어를 자유롭게 나누는 커뮤니티입니다.</p>
+  </section>
+
+  <section class="boards">
+    <div class="board">
+      <h3>💬 자유게시판</h3>
+      <p>잡담, 질문, 일상 이야기</p>
+    </div>
+    <div class="board">
+      <h3>🎮 콘텐츠</h3>
+      <p>마인크래프트, 영상, 음악</p>
+    </div>
+    <div class="board">
+      <h3>🧠 아이디어</h3>
+      <p>기획, 세계관, 프로젝트 모집</p>
+    </div>
+    <div class="board">
+      <h3>📢 공지사항</h3>
+      <p>운영 소식과 이벤트</p>
+    </div>
+  </section>
+</div>
+
+<footer>
+  © 2026 Lupian Community. All rights reserved.
+</footer>
+
+  <script>
+    const boards = document.querySelectorAll('.board');
+    boards.forEach(board => {
+      board.addEventListener('click', () => {
+        const title = board.querySelector('h3').innerText;
+        localStorage.setItem('currentBoard', title);
+        window.location.href = 'board.html';
+      });
+    });
+  </script>
+</body>
+</html>

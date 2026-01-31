@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>루피안 게시판</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Pretendard, Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+    header {
+      background: #020617;
+      padding: 16px 24px;
+      border-bottom: 1px solid #1e293b;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+      color: #38bdf8;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .top h2 {
+      margin: 0;
+    }
+    button {
+      background: #38bdf8;
+      border: none;
+      color: #020617;
+      padding: 8px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .post {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+    .post:hover {
+      border-color: #38bdf8;
+    }
+    .post h3 {
+      margin: 0 0 6px;
+    }
+    .post p {
+      margin: 0;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+    .write {
+      display: none;
+      margin-bottom: 24px;
+    }
+    .write input, .write textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+    }
+    .write textarea {
+      resize: vertical;
+      height: 120px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1 onclick="location.href='index.html'" style="cursor:pointer">← 루피안</h1>
+</header>
+
+<div class="container">
+  <div class="top">
+    <h2 id="boardTitle"></h2>
+    <button onclick="toggleWrite()">글쓰기</button>
+  </div>
+
+  <div class="write" id="writeBox">
+    <input id="titleInput" placeholder="제목" />
+    <textarea id="contentInput" placeholder="내용"></textarea>
+    <button onclick="savePost()">등록</button>
+  </div>
+
+  <div id="postList"></div>
+</div>
+
+<script>
+  const boardTitle = localStorage.getItem('currentBoard') || '게시판';
+  document.getElementById('boardTitle').innerText = boardTitle;
+
+  const key = 'posts_' + boardTitle;
+
+  function toggleWrite() {
+    const box = document.getElementById('writeBox');
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function savePost() {
+    const title = document.getElementById('titleInput').value;
+    const content = document.getElementById('contentInput').value;
+    if (!title || !content) return alert('제목과 내용을 입력하세요');
+
+    const posts = JSON.parse(localStorage.getItem(key) || '[]');
+    posts.unshift({ title, content, author: nickname, time: new Date().toLocaleString() });({ title, content, time: new Date().toLocaleString() });
+    localStorage.setItem(key, JSON.stringify(posts));
+
+    document.getElementById('titleInput').value = '';
+    document.getElementById('contentInput').value = '';
+    toggleWrite();
+    renderPosts();
+
+function openPost(post) {
+  const modal = document.createElement('div');
+  modal.style.position = 'fixed';
+  modal.style.top = 0;
+  modal.style.left = 0;
+  modal.style.width = '100%';
+  modal.style.height = '100%';
+  modal.style.background = 'rgba(0,0,0,0.7)';
+  modal.innerHTML = `
+    <div style="background:#020617;padding:20px;border-radius:12px;max-width:600px;margin:80px auto">
+      <h3>${post.title}</h3>
+      <p style="color:#94a3b8">작성자: ${post.author}</p>
+      <p>${post.content}</p>
+      <hr>
+      <input id="commentInput" placeholder="댓글 입력" style="width:100%;padding:8px" />
+      <button onclick="addComment('${post.time}')">댓글</button>
+      <div id="comments"></div>
+      <br><button onclick="this.closest('div').parentElement.remove()">닫기</button>
+    </div>`;
+  document.body.appendChild(modal);
+  renderComments(post.time);
+}
+
+function addComment(postId) {
+  const input = document.getElementById('commentInput');
+  if (!input.value) return;
+  const comments = JSON.parse(localStorage.getItem('comments_' + postId) || '[]');
+  comments.push({ author: nickname, text: input.value });
+  localStorage.setItem('comments_' + postId, JSON.stringify(comments));
+  input.value = '';
+  renderComments(postId);
+}
+
+function renderComments(postId) {
+  const box = document.getElementById('comments');
+  const comments = JSON.parse(localStorage.getItem('comments_' + postId) || '[]');
+  box.innerHTML = comments.map(c => `<p><b>${c.author}</b>: ${c.text}</p>`).join('');
+}
+  }
+
+  // 닉네임 설정
+let nickname = localStorage.getItem('nickname');
+if (!nickname) {
+  nickname = prompt('닉네임을 입력하세요');
+  localStorage.setItem('nickname', nickname || '익명');
+}
+
+function renderPosts() {
+    const list = document.getElementById('postList');
+    list.innerHTML = '';
+    const posts = JSON.parse(localStorage.getItem(key) || '[]');
+
+    posts.forEach(post => {
+      const div = document.createElement('div');
+      div.className = 'post';
+      div.innerHTML = `<h3>${post.title}</h3><p>${post.time}</p>`;
+      div.onclick = () => openPost(post);
+      list.appendChild(div);
+    });
+  }
+
+  renderPosts();
+</script>
+
+</body>
+</html>
